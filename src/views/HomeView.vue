@@ -97,11 +97,11 @@ export default {
         // .then(data.value => await res.json())
          
 
+        data.value = await res.json(); 
+        console.log(await res) 
         if(!res.exists) {
             throw Error("Uhm what is " + city.value + "?, Let's try that again ")
-        } 
-        data.value = await res.json(); 
-        console.log(await res)    
+        }    
  
       }
       catch (err) {
