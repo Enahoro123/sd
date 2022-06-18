@@ -6,8 +6,9 @@
       <div class="left-side">
           <h3>The Weather</h3> 
 
+
                 <div 
-                v-if="data !== null && data !== undefined && data.cod === 200"
+                v-if="!error && data !== null && data !== undefined && data.cod === 200"
                 class="every"
                 >
                     <h1  class="temp">{{ data.main.temp }}°C</h1>
@@ -23,7 +24,7 @@
                 </div>
 
                 <div 
-                v-else-if="data !== null && data !== undefined && data.cod === 400"
+                v-if="!error && data !== null && data !== undefined && data.cod === 400"
                 class="every"
                 >
                     <h1  class="temp">{{ data.main.temp }}°C</h1>
@@ -37,12 +38,10 @@
                         <img class="icon" :src="'https://openweathermap.org/img/wn/' + data.weather[0].icon +'@2x.png'" alt="">
                       </div>
                 </div>
-
-                <div v-else class="error">
-                  <p>{{error}}</p>
+                <div v-if="error" class="error">
+                  <h3>{{ error }}</h3>
                 </div>
       </div>
-            
         
 
         <aside>
@@ -54,19 +53,22 @@
                     </span>       
                       </button>
             </form>
-
-            <div v-if="data !== null && data !== undefined && data.cod === 200">
-            <!-- <ul class="cities">
-              <li class="city">New York</li>
-              <li class="city">Abuja</li>
-              <li class="city">London</li>
-              <li class="city">Jos</li>
-            </ul> -->
+            <div v-if="!error && data !== null && data !== undefined &&  data.cod === 200">
               <ul class="details">
                 <h4>Weather Details</h4>
+                <li> <span>Feels Like </span> <span>{{ data.main.feels_like }}°</span></li>
                 <li> <span>Humidity   </span> <span>{{ data.main.humidity }}%</span></li>
                 <li> <span>Wind       </span> <span>{{ data.wind.speed }}km/h</span></li>
-                <li> <span>Feels Like </span> <span>{{ data.main.feels_like }}</span></li>
+                <li> <span>Pressure   </span> <span>{{ data.main.pressure }}</span></li>
+              </ul>
+            </div>
+
+            <div v-if="!error && data !== null && data !== undefined && !error && data.cod === 400">
+              <ul class="details">
+                <h4>Weather Details</h4>
+                <li> <span>Feels Like </span> <span>{{ data.main.feels_like }}°</span></li>
+                <li> <span>Humidity   </span> <span>{{ data.main.humidity }}%</span></li>
+                <li> <span>Wind       </span> <span>{{ data.wind.speed }}km/h</span></li>
                 <li> <span>Pressure   </span> <span>{{ data.main.pressure }}</span></li>
               </ul>
             </div>
@@ -76,41 +78,35 @@
 </template>
 
 <script>
-import { ref } from '@vue/reactivity';
-import ListView from '../components/ListView.vue'
+import { ref } from '@vue/reactivity'
 
 export default {
   name: 'HomeView',
-  components: { ListView },
   setup() {
     const weathers = ref([]);
     const city = ref('')
     const data = ref(null)
-    const error = ref(null)
+    const error = ref(false)
     const imageUrl = ref(`https://source.unsplash.com/1600x900/?`)
     
 
     const fetchWeather = async ()  => {
-      try{
-        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&units=metric&appid=66822e77dd146ca9b9cd4f0b603da3bc`)
-        // .then(res => res.json())
-        // .then(data.value => await res.json())
-         
-
-        data.value = await res.json(); 
+      try {
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&units=metric&appid=66822e77dd146ca9b9cd4f0b603da3bc`); 
+        if(!res.ok) {
+          throw Error("Ooh '"+ city.value +"' is not a city")
+          // Promise.reject(error.value);
+        }
+        data.value = await res.json();
+        error.value = false
         console.log(await res) 
-        if(!res.exists) {
-            throw Error("Uhm what is " + city.value + "?, Let's try that again ")
-        }    
- 
-      }
-      catch (err) {
-        error.value = err.message
-        console.log(error.value)
+      } catch (e) {
+        error.value = true
+        error.value = e.message;
+        console.log(error.value)  
       }
 
     }
-    // fetchWeather();
 
 
       return { error, city, weathers, fetchWeather, data, imageUrl};
