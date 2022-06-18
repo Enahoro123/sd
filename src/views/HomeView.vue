@@ -46,7 +46,7 @@
 
         <aside>
             <form>
-                <input type="text" v-model="city" class="search-bar" placeholder="City name">
+                <input type="text" v-model="city" class="search-bar" placeholder="Enter city name">
                 <button @click.prevent="fetchWeather">
                     <span class="material-icons">
                         search
