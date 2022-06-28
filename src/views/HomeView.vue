@@ -39,7 +39,7 @@
                       </div>
                 </div>
                 <div v-if="error" class="error">
-                  <h3>{{ error }}</h3>
+                  <h2>{{ error }}</h2>
                 </div>
       </div>
         
@@ -94,7 +94,7 @@ export default {
       try {
         const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city.value}&units=metric&appid=66822e77dd146ca9b9cd4f0b603da3bc`); 
         if(!res.ok) {
-          throw Error("😬 '"+ city.value +"' is not a city, try again")
+          throw Error("Sorry, city not found")
           // Promise.reject(error.value);
         }
         data.value = await res.json();
