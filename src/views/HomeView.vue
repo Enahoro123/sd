@@ -339,6 +339,18 @@ h1, h3 {
     padding-top: 20px;
   }
 }
+@media only screen and (max-width: 480px) {
+  .home .background {
+    min-height: 100vh;
+  }
+  aside {
+    bottom: 0;
+    position: absolute;
+    min-height: 60vh;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
 @media only screen and (max-width: 300px) {
   .home .background {
     min-height: 40em;
